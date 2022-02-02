@@ -1,0 +1,10 @@
+{
+  "name": "Vikhyaath",
+  "reporting_mailId": "narayana1311@gmail.com",
+  "host": "smtp-relay.gmail.com",
+  "port": 587,
+  "username": "sales@vikhyaath.in",
+  "password": "ps@#1234",
+  "mailId": "sales@vikhyaath.in",
+  "replyToMailId": "sales@vikhyaath.in"
+}
