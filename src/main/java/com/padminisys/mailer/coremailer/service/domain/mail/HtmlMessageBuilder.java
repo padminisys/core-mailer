@@ -39,7 +39,7 @@ public class HtmlMessageBuilder {
         Document document = Jsoup.parse(html);
         Element link = new Element(Tag.valueOf("a"), "")
                 .text("Click here to unsubscribe from our mailing list.")
-                .attr("href", "http://localhost:8080/contact/unsubscribe?mailTransactionId=" + mailTransaction.getId())
+                .attr("href", "https://padmini-mailer.herokuapp.com/contact/unsubscribe?mailTransactionId=" + mailTransaction.getId())
                 .attr("target", "_blank");
         Objects.requireNonNull(document.getElementById("unsubscribe")).appendChild(link);
         helper.setText(document.html(), true);
