@@ -4,9 +4,9 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
-    url:  jdbc:postgresql://13.127.205.125:5432/mailer
-    username: postgres
-    password: rbd@6321P
+    url: jdbc:postgresql://ec2-18-234-17-166.compute-1.amazonaws.com:5432/df4r6njn7ufoa0
+    username: yqzaqegrecvfrm
+    password: e12158f76a092dd047b1a1a7cb1f306ec4f7c6553fd1e6e0ff9bbce272c23d73
 
 management:
   endpoints:
