@@ -2,8 +2,10 @@ package com.padminisys.mailer.coremailer.service.domain.mail;
 
 import com.padminisys.mailer.coremailer.dal.entities.Contact;
 import com.padminisys.mailer.coremailer.dal.entities.MailRequest;
+import com.padminisys.mailer.coremailer.dal.entities.MailTransaction;
 import com.padminisys.mailer.coremailer.dal.repos.ContactRepository;
 import com.padminisys.mailer.coremailer.dal.repos.MailRequestRepository;
+import com.padminisys.mailer.coremailer.service.model.MailEnvelope;
 import com.padminisys.mailer.coremailer.service.model.Mailer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +26,12 @@ public class MailService {
     private final ContactRepository contactRepository;
     private final MailRequestRepository mailRequestRepository;
     private final MailSender mailSender;
+    private final MailTransactionBuilder mailTransactionBuilder;
 
     @Async
     public CompletableFuture<MailRequest> process(MailRequest mailRequest) {
         List<Contact> contacts = contactRepository.findContactsByClientAndTagAndOptOut(mailRequest.getClient(), mailRequest.getTag(), false);
-        for (Contact contact : contacts) {
-            Mailer mailer = new Mailer(mailRequest.getClient(), mailRequest, contact);
+            Mailer mailer = new Mailer(mailRequest.getClient(), mailRequest);
             try {
                 mailer = mailSender.implementMailer(mailer);
             } catch (MessagingException messagingException) {
@@ -42,8 +44,10 @@ public class MailService {
                 log.error("Unexpected exception encountered for tag {} for client {} ", mailRequest.getTag(), mailRequest.getClient().getName(), exception);
                 log.error(ExceptionUtils.getStackTrace(exception));
             }
+            
+            for (Contact contact : contacts) {
             try {
-                mailSender.send(mailer);
+                mailSender.send(mailer,new MailEnvelope(mailTransactionBuilder.build(mailer,contact)));
             } catch (MessagingException messagingException) {
                 log.error("mail sender encountered exception while sending email to {} for client {} ", contact.getEmail(), mailer.getClient().getName(), messagingException);
             }

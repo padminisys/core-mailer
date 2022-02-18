@@ -2,6 +2,7 @@ package com.padminisys.mailer.coremailer;
 
 import java.util.UUID;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,7 @@ public class ContactControllerTest {
 
 	private final ContactController contactController;
 
+	@Disabled
 	@ParameterizedTest
 	@CsvFileSource(resources = "/5kMailAddressToShootMail.csv")
 	public void newContactCreationFromCsv(String email) throws WebRequestProcessingException {
