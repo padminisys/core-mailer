@@ -7,13 +7,13 @@ import javax.mail.MessagingException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.padminisys.mailer.coremailer.dal.entities.Client;
 import com.padminisys.mailer.coremailer.dal.entities.Contact;
 import com.padminisys.mailer.coremailer.dal.entities.MailTransaction;
 import com.padminisys.mailer.coremailer.dal.repos.MailTransactionRepository;
-import com.padminisys.mailer.coremailer.service.model.MailEnvelope;
 import com.padminisys.mailer.coremailer.service.model.Mailer;
 
 import lombok.RequiredArgsConstructor;
@@ -43,12 +43,12 @@ public class MailSender {
 		return htmlMessageBuilder.mimeMessageBuilder(mailer);
 	}
 
-	public void send(Mailer mailer, MailEnvelope mailEnvelope) throws MessagingException {
-		MailTransaction mailTransaction = mailEnvelope.getMailTransaction();
+	public void send(Mailer mailer, MailTransaction mailTransaction) throws MessagingException {
 		Contact contact = mailTransaction.getContact();
 		try {
-			htmlMessageBuilder.mimeMessageHelperBuilder(mailer, mailTransaction).setTo(contact.getEmail());
-			mailer.getJavaMailSender().send(mailer.getMimeMessage());
+			MimeMessageHelper mimeMessageHelper = htmlMessageBuilder.mimeMessageHelperBuilder(mailer, mailTransaction);
+			mimeMessageHelper.setTo(contact.getEmail());
+			mailer.getJavaMailSender().send(mimeMessageHelper.getMimeMessage());
 		} catch (Exception exception) {
 			log.error("Mail sender encountered Exception while sending mail to {} for client {} ", contact.getEmail(),
 					mailer.getClient().getName(), exception);

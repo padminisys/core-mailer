@@ -16,7 +16,6 @@ import com.padminisys.mailer.coremailer.dal.entities.Client;
 import com.padminisys.mailer.coremailer.dal.entities.MailRequest;
 import com.padminisys.mailer.coremailer.dal.repos.ClientRepository;
 import com.padminisys.mailer.coremailer.dal.repos.MailRequestRepository;
-import com.padminisys.mailer.coremailer.service.domain.mail.MailSender;
 import com.padminisys.mailer.coremailer.service.domain.mail.MailService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("mailer")
 public class MailRequestController {
 
-	private final MailSender mailSender;
 	private final MailRequestRepository mailRequestRepository;
 	private final MailRequestMapper mailRequestMapper;
 	private final MailService mailService;
@@ -42,10 +40,10 @@ public class MailRequestController {
 					.save(mailRequestMapper.mailServiceRequestToMailRequest(mailServiceRequest));
 			client = clientRepository.findById(mailRequest.getClient().getId());
 			client.ifPresent(mailRequest::setClient);
+			mailService.process(mailRequest);
 		} catch (Exception exception) {
 			throw new WebRequestProcessingException(exception);
 		}
-		mailService.process(mailRequest);
 		MailServiceResponse mailServiceResponse = new MailServiceResponse();
 		mailServiceResponse.setId(mailRequest.getId());
 		mailServiceResponse.setStatus(mailRequest.getStatus());
